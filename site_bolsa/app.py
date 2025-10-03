@@ -56,7 +56,7 @@ def buscar_dados_com_selenium(codigo_acao, data_pesquisa):
         # ----------------------------------------------------
 
         html = driver.page_source
-        soup = BeautifulSoup(html, 'lxml')
+        soup = BeautifulSoup(html, 'html.parser')
         tabela = soup.find('table', {'data-test': 'historical-prices'})
 
         if not tabela:
@@ -105,4 +105,5 @@ def index():
     return render_template('index.html', **contexto)
 
 if __name__ == '__main__':
+
     app.run(debug=True)
