@@ -42,6 +42,10 @@ git clone https://github.com/LuizCMaia/Bolsa_De_Valores
 Ou fazer o download clicando em Download ZIP
 Após isso, extrair a pasta.
 
+Abra um terminal (CMD, PowerShell ou Terminal).
+
+Caminhe para a pasta do projeto utilizado CD: (Caminho da pasta).
+
 **2. Criar um Ambiente Virtual**
 
 É uma boa prática isolar as dependências do projeto.
