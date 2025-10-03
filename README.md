@@ -37,9 +37,10 @@ Siga estes passos para configurar e rodar o projeto em um novo computador.
 Abra um terminal (CMD, PowerShell ou Terminal) e clone este repositório do GitHub.
 
 ```bash
-git clone <URL_DO_SEU_REPOSITORIO_NO_GITHUB>
-cd site_bolsa
+git clone https://github.com/LuizCMaia/Bolsa_De_Valores
 ```
+Ou fazer o download clicando em Download ZIP
+Após isso, extrair a pasta.
 
 **2. Criar um Ambiente Virtual**
 
