@@ -3,53 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Ações</title>
+    <title>Consulta Automática de Ações</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
-        h1 { color: #0056b3; text-align: center; }
-        form { display: flex; flex-direction: column; gap: 15px; }
-        label { font-weight: bold; }
-        input[type="text"], input[type="date"] { padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 16px; }
-        button { background-color: #007bff; color: white; padding: 12px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s; }
-        button:hover { background-color: #0056b3; }
-        .resultado { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .resultado h2 { text-align: center; color: #333; }
-        .resultado p { background-color: #f9f9f9; padding: 10px; border-left: 4px solid #007bff; margin: 10px 0; }
-        .erro { color: #d9534f; background-color: #f2dede; border: 1px solid #ebccd1; padding: 15px; border-radius: 4px; text-align: center; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
+        h1 { color: #1877f2; margin-bottom: 25px; font-size: 24px; }
+        form { display: flex; flex-direction: column; gap: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        label { font-weight: 600; font-size: 16px; color: #606770; text-align: left; margin-bottom: 6px; display: block; }
+        input[type="text"], input[type="date"] { padding: 12px; border-radius: 6px; border: 1px solid #dddfe2; font-size: 16px; width: 100%; box-sizing: border-box; }
+        button { background-color: #1877f2; color: white; padding: 14px; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; position: relative; }
+        button:hover { background-color: #166fe5; }
+        button .spinner { display: none; border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 20px; height: 20px; animation: spin 1s ease-in-out infinite; position: absolute; top: 50%; left: 50%; margin-top: -10px; margin-left: -10px; }
+        button.loading .spinner { display: block; }
+        button.loading .button-text { visibility: hidden; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #resultado-container { min-height: 50px; }
+        .resultado { margin-top: 30px; border-top: 1px solid #dddfe2; padding-top: 20px; }
+        .resultado h2 { text-align: center; color: #1c1e21; }
+        .resultado p { background-color: #f7f7f7; padding: 12px; border-left: 4px solid #1877f2; margin: 10px 0; text-align: left; }
+        .mensagem { font-weight: 600; padding: 15px; border-radius: 6px; margin-top: 20px; }
+        .erro { color: #fa383e; background-color: #ffebe_c; border: 1px solid #ffc2c4; }
+        .info { color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Consulta de Cotação de Ações</h1>
-        <form method="POST">
-            <div>
-                <label for="codigo_acao">Código da Ação (ex: PETR4, VALE3):</label>
-                <input type="text" id="codigo_acao" name="codigo_acao" required>
+        <h1>Consulta Automática de Ações</h1>
+        <form id="consulta-form">
+            <div class="form-grid">
+                <div>
+                    <label for="codigo_acao">Código da Ação:</label>
+                    <input type="text" id="codigo_acao" name="codigo_acao" placeholder="Ex: PETR4" required>
+                </div>
+                <div>
+                    <label for="data">Data da Consulta:</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
             </div>
-            <div>
-                <label for="data">Data:</label>
-                <input type="date" id="data" name="data" required>
-            </div>
-            <button type="submit">Consultar</button>
+            <button type="submit">
+                <span class="button-text">Consultar Cotação</span>
+                <div class="spinner"></div>
+            </button>
         </form>
 
-        {% if erro %}
-            <div class="erro">
-                {{ erro }}
-            </div>
-        {% endif %}
-
-        {% if dados_acao %}
-            <div class="resultado">
-                <h2>Resultado para {{ dados_acao.codigo }} em {{ dados_acao.data }}</h2>
-                <p><strong>Abertura:</strong> {{ dados_acao.abertura }}</p>
-                <p><strong>Fechamento:</strong> {{ dados_acao.fechamento }}</p>
-                <p><strong>Máxima do dia:</strong> {{ dados_acao.maxima }}</p>
-                <p><strong>Mínima do dia:</strong> {{ dados_acao.minima }}</p>
-                <p><strong>Volume Negociado:</strong> {{ dados_acao.volume }}</p>
-            </div>
-        {% endif %}
+        <div id="resultado-container"></div>
     </div>
+
+    <script>
+        const form = document.getElementById('consulta-form');
+        const resultadoContainer = document.getElementById('resultado-container');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const codigoAcao = document.getElementById('codigo_acao').value.trim().toUpperCase();
+            const dataStr = document.getElementById('data').value;
+
+            if (!codigoAcao || !dataStr) {
+                exibirMensagem('Por favor, preencha todos os campos.', 'erro');
+                return;
+            }
+
+            // Ativa o estado de carregamento
+            submitButton.classList.add('loading');
+            resultadoContainer.innerHTML = '';
+            exibirMensagem('Buscando dados, por favor aguarde...', 'info');
+
+            try {
+                const url = `https://brapi.dev/api/quote/${codigoAcao}?range=1y&interval=1d`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error('Código da ação não encontrado ou API indisponível.');
+                }
+
+                const dadosJson = await response.json();
+                const historico = dadosJson?.results?.[0]?.historicalDataPrice;
+
+                if (!historico) {
+                    throw new Error('Não foi possível obter o histórico de preços para esta ação.');
+                }
+
+                const dataPesquisa = new Date(dataStr + 'T12:00:00'); // Adiciona meio-dia para evitar problemas de fuso horário
+                const timestampInicioDia = new Date(dataPesquisa.getFullYear(), dataPesquisa.getMonth(), dataPesquisa.getDate()).getTime() / 1000;
+                const timestampFimDia = timestampInicioDia + (24 * 60 * 60) - 1;
+
+                const dadosDoDia = historico.find(dia => dia.date >= timestampInicioDia && dia.date <= timestampFimDia);
+
+                if (dadosDoDia) {
+                    exibirResultado(dadosDoDia, codigoAcao, dataPesquisa);
+                } else {
+                    throw new Error(`Não foram encontrados dados para a data ${dataPesquisa.toLocaleDateString('pt-BR')}. Pode ser um fim de semana ou feriado.`);
+                }
+
+            } catch (error) {
+                exibirMensagem(error.message, 'erro');
+            } finally {
+                // Desativa o estado de carregamento
+                submitButton.classList.remove('loading');
+            }
+        });
+
+        function exibirResultado(dados, codigo, data) {
+            resultadoContainer.innerHTML = `
+                <div class="resultado">
+                    <h2>Resultado para ${codigo} em ${data.toLocaleDateString('pt-BR')}</h2>
+                    <p><strong>Abertura:</strong> R$ ${dados.open.toFixed(2)}</p>
+                    <p><strong>Fechamento:</strong> R$ ${dados.close.toFixed(2)}</p>
+                    <p><strong>Máxima do dia:</strong> R$ ${dados.high.toFixed(2)}</p>
+                    <p><strong>Mínima do dia:</strong> R$ ${dados.low.toFixed(2)}</p>
+                    <p><strong>Volume Negociado:</strong> ${dados.volume.toLocaleString('pt-BR')}</p>
+                </div>
+            `;
+        }
+
+        function exibirMensagem(texto, tipo) {
+            resultadoContainer.innerHTML = `<div class="mensagem ${tipo}">${texto}</div>`;
+        }
+
+    </script>
 </body>
 </html>
+
